@@ -36,7 +36,9 @@ try {
         ':descricao' => $descricao
     ));
 
-    echo "Cadastro de pizza realizado com sucesso!";
+    header("Location: /cardapioPizza.php");
+    exit();
+
 } catch (PDOException $e) {
     echo "Erro ao conectar ao banco de dados: " . $e->getMessage();
 }
@@ -51,4 +53,7 @@ try {
 } catch (PDOException $e) {
     echo "Erro ao conectar ao banco de dados: " . $e->getMessage();
 }
+
+
+
 ?>

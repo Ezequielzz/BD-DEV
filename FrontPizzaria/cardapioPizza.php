@@ -74,7 +74,7 @@
                         echo '<td>' . $pizza['descricao_pizza'] . '</td>';
                         echo '<td>';
                         echo '<a href="deletePizza.php?id=' . $pizza['id_pizza'] . '" class="btn btn-danger">Apagar</a>';
-                        echo '<a href="#" class="btn btn-primary ms-1">Editar</a>'; // Botão editar (adicionar funcionalidade depois)
+                        echo '<a href="updatePizza.php? id' . $pizza['id_pizza'] . '" class="btn btn-primary ms-1">Editar</a>';
                         echo '</td>';
 
                         echo '</tr>';
