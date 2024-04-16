@@ -36,7 +36,7 @@ try {
         ':descricao' => $descricao
     ));
 
-    header("Location: /cardapioPizza.php");
+    header("Location: cardapioPizza.php");
     exit();
 
 } catch (PDOException $e) {

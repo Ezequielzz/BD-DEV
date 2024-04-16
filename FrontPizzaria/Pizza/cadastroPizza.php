@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <div class="image-container">
-            <img src="img/pizzaCadastro.jpeg" alt="Pizza">
+            <img src="/img/pizzaCadastro.jpeg" alt="Pizza">
         </div>
         <div class="form-container">
             <h2>Cadastro de Pizzas</h2>

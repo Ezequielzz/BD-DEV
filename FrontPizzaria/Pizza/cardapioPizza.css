@@ -30,3 +30,17 @@ body {
     color: white;
     font-weight: 600;
 }
+
+select.form-control,
+button.btn {
+    width: 150px;
+    height: 40px;
+    margin-right: 10px; /* Espaçamento entre o select e o botão */
+}
+
+select.form-control {
+    border-radius: 7px;
+}
+
+
+
