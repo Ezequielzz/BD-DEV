@@ -1,0 +1,23 @@
+body {
+    margin: 0;
+    background-color: #ffffff;
+}
+
+.navbar-brand img {
+   width: 85px;
+}
+
+.navbar {
+   background-color: #000080;
+}
+
+.nav-link {
+   color: white;
+   
+   transition: 0.3s;
+}
+
+.nav-link:hover {
+   color: #c7c7c7;
+}
+
