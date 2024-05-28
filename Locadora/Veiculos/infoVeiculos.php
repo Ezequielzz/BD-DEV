@@ -87,6 +87,7 @@
                             <th>Tipo</th>
                             <th>Disponibilidade</th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -127,6 +128,7 @@
                                     <td>{$row['tipo']}</td>
                                     <td>{$row['disponibilidade']}
                                     <td><a href='editarInfoVeiculo.php'><button type='button' class='btn btn-primary'>Editar</button></a></td>
+                                    <td><a href='editarInfoVeiculo.php'><button type='button' class='btn btn-danger'>Excluir</button></a></td>
                                   </tr>";
                         }
                         pg_free_result($result);

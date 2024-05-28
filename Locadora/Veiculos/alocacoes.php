@@ -11,51 +11,26 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">
-                <img src="../img/Logo2.png" alt="">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="../Home/index.html">Início</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../Login/login.html">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Cadastro</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../Veiculos/veiculos.html">Veículos</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="../Cadastro/cadastro.html">
-                            <i class="fas fa-user fa-2xl"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <div class="container mt-5">
+<div class="container mt-5">
         <div class="card">
             <div class="card-header">
                 <h2>Listagem de Locações</h2>
             </div>
             <div class="card-body">
                 <form method="GET" class="row mb-4">
-                    <div class="col-md-3">
-                        <label for="ldataalocacao" class="form-label">Data de locação</label>
-                        <input type="text" id="ldataalocacao" name="data_locacao" class="form-control" placeholder="Digite a data de locação">
+                    <div class="col-md-4">
+                        <label for="cliente" class="form-label">Nome do Cliente</label>
+                        <input type="text" id="cliente" name="cliente" class="form-control" placeholder="Digite o nome do cliente">
                     </div>
-                    <div class="col-md-3 d-flex align-items-end">
+                    <div class="col-md-3">
+                        <label for="data_inicio" class="form-label">Data de Início</label>
+                        <input type="date" id="data_inicio" name="data_inicio" class="form-control">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="data_fim" class="form-label">Data de Término</label>
+                        <input type="date" id="data_fim" name="data_fim" class="form-control">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100">Filtrar</button>
                     </div>
                 </form>
@@ -72,15 +47,21 @@
                     </thead>
                     <tbody>
                         <?php
-                        // Código PHP para buscar dados da tabela Locacao com JOINs
+                        // Código PHP para buscar dados da tabela Locacao com JOINs e Filtros
                         $conn = pg_connect("host=localhost dbname=locadorazz user=postgres password=postgres");
                         if (!$conn) {
                             die("Conexão falhou: " . pg_last_error());
                         }
 
                         $conditions = [];
-                        if (!empty($_GET['data_locacao'])) {
-                            $conditions[] = "data_locacao = '" . pg_escape_string($conn, $_GET['data_locacao']) . "'";
+                        if (!empty($_GET['cliente'])) {
+                            $conditions[] = "Clientes.nome ILIKE '%" . pg_escape_string($conn, $_GET['cliente']) . "%'";
+                        }
+                        if (!empty($_GET['data_inicio'])) {
+                            $conditions[] = "Locacao.data_locacao >= '" . pg_escape_string($conn, $_GET['data_inicio']) . "'";
+                        }
+                        if (!empty($_GET['data_fim'])) {
+                            $conditions[] = "Locacao.data_locacao <= '" . pg_escape_string($conn, $_GET['data_fim']) . "'";
                         }
 
                         $query = "SELECT Locacao.id_locacao, Locacao.data_locacao, Locacao.data_devolucao, Locacao.valor_total, 
