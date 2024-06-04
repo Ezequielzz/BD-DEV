@@ -4,11 +4,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+    rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="manutencaoVeiculo.css">
     <title>Consulta de Manutenções - Sync</title>
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="../img/Logo2.png" alt="">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Login/login.html">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Funcionarios/funcionarios.html">Funcionários</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Veiculos/veiculos.html">Veículos</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Cadastro/cadastro.html">
+                            <i class="fas fa-user fa-2xl"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <div class="container mt-5">
         <div class="card">
             <div class="card-header">
@@ -107,13 +142,13 @@
                 </table>
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
-                        <?php if ($page > 1): ?>
+                        <?php if ($page > 1) : ?>
                             <li class="page-item"><a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>">Anterior</a></li>
                         <?php endif; ?>
-                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <?php for ($i = 1; $i <= $total_pages; $i++) : ?>
                             <li class="page-item <?php if ($i == $page) echo 'active'; ?>"><a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>"><?php echo $i; ?></a></li>
                         <?php endfor; ?>
-                        <?php if ($page < $total_pages): ?>
+                        <?php if ($page < $total_pages) : ?>
                             <li class="page-item"><a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page + 1])); ?>">Próxima</a></li>
                         <?php endif; ?>
                     </ul>

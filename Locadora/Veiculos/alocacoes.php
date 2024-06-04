@@ -11,6 +11,40 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="../Home/index.html">
+                <img src="../img/Logo2.png" alt="">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Home/index.html">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Login/login.html">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Funcionarios/funcionarios.html">Funcionários</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Veiculos/veiculos.html">Veículos</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Cadastro/cadastro.html">
+                            <i class="fas fa-user fa-2xl"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 <div class="container mt-5">
         <div class="card">
             <div class="card-header">
@@ -43,6 +77,7 @@
                             <th>Valor Total</th>
                             <th>Carro</th>
                             <th>Cliente</th>
+                            <th>Média de Dias Alugado</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -65,7 +100,9 @@
                         }
 
                         $query = "SELECT Locacao.id_locacao, Locacao.data_locacao, Locacao.data_devolucao, Locacao.valor_total, 
-                                         Carro.Modelo AS carro, Clientes.nome AS cliente
+                                         Carro.Modelo AS carro, Clientes.nome AS cliente,
+                                         (Locacao.data_devolucao - Locacao.data_locacao) AS dias_alugado,
+                                         AVG(Locacao.data_devolucao - Locacao.data_locacao) OVER (PARTITION BY Carro.id_carro) AS media_dias_alugado
                                   FROM Locacao
                                   JOIN Carro ON Locacao.id_carro = Carro.id_carro
                                   JOIN Clientes ON Locacao.id_cliente = Clientes.id_cliente";
@@ -79,6 +116,8 @@
                         }
 
                         while ($row = pg_fetch_assoc($result)) {
+                            $dias_alugado = $row['dias_alugado'];
+                            $media_dias_alugado = round($row['media_dias_alugado'], 2);
                             echo "<tr>
                                     <td>{$row['id_locacao']}</td>
                                     <td>{$row['data_locacao']}</td>
@@ -86,6 +125,7 @@
                                     <td>{$row['valor_total']}</td>
                                     <td>{$row['carro']}</td>
                                     <td>{$row['cliente']}</td>
+                                    <td>{$media_dias_alugado}</td>
                                   </tr>";
                         }
                         pg_free_result($result);
