@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
     rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/Home/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="alocar.css">
     <title>Alugar - Sync</title>
@@ -60,7 +61,7 @@
                         <!-- Opções de clientes devem ser geradas dinamicamente do banco de dados -->
                         <?php
                         // Código PHP para preencher dinamicamente as opções de cliente
-                        $conn = pg_connect("host=localhost dbname=locadorazz user=postgres password=postgres");
+                        $conn = pg_connect("host=localhost dbname=locadoraEzequielzz user=postgres password=postgres");
                         if (!$conn) {
                             die("Conexão falhou: " . pg_last_error());
                         }
@@ -77,7 +78,7 @@
                     </select>
 
                     <label for="ldatalocacao">Data da Locação</label>
-                    <input type="text" id="ldatalocacao" name="data_locacao" placeholder="Insira a data de locação">
+                    <input type="date" id="ldatalocacao" name="data_locacao" placeholder="Insira a data de locação">
 
 
                     <label for="lvalor">Valor (Exceto Taxas)</label>
@@ -90,7 +91,7 @@
                         <!-- Opções de carros devem ser geradas dinamicamente do banco de dados -->
                         <?php
                         // Código PHP para preencher dinamicamente as opções de carro
-                        $conn = pg_connect("host=localhost dbname=locadorazz user=postgres password=postgres");
+                        $conn = pg_connect("host=localhost dbname=locadoraEzequielzz user=postgres password=postgres");
                         if (!$conn) {
                             die("Conexão falhou: " . pg_last_error());
                         }
@@ -107,7 +108,7 @@
                     </select>
 
                     <label for="ldatadevolucao">Data da Devolução</label>
-                    <input type="text" id="ldatadevolucao" name="data_devolucao" placeholder="Insira a data de devolução">
+                    <input type="date" id="ldatadevolucao" name="data_devolucao" placeholder="Insira a data de devolução">
 
                     <label for="lnumero">CEP</label>
                     <input type="text" id="lcep" name="cep" placeholder="Insira seu CEP">

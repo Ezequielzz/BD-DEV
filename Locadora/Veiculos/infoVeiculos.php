@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="stylesheet" href="infoVeiculos.css">
+        <link rel="stylesheet" href="/Home/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="infoVeiculos.css">
     <title>Listagem de Veículos - Sync</title>
 </head>
 <body>
@@ -22,16 +23,19 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="../Home/index.html">Início</a>
+                        <a class="nav-link" href="index.html">Início</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../Login/login.html">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Cadastro</a>
+                        <a class="nav-link" href="../Funcionarios/funcionarios.html">Funcionários</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../Veiculos/veiculos.html">Veículos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Clientes/clientes.html">Clientes</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
@@ -66,7 +70,7 @@
                             <option value="Sedan">Sedan</option>
                             <option value="SUV">SUV</option>
                             <option value="Hatchback">Hatchback</option>
-                            <!-- Adicione outros tipos conforme necessário -->
+                            <option value="Esportivo">Esportivo</option>
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -77,6 +81,17 @@
                         <button type="submit" class="btn btn-primary w-100">Filtrar</button>
                     </div>
                 </form>
+                <form method="GET" class="mb-4">
+                    <input type="hidden" name="disponibilidade" value="<?php echo htmlspecialchars($_GET['disponibilidade'] ?? ''); ?>">
+                    <input type="hidden" name="tipo" value="<?php echo htmlspecialchars($_GET['tipo'] ?? ''); ?>">
+                    <input type="hidden" name="modelo" value="<?php echo htmlspecialchars($_GET['modelo'] ?? ''); ?>">
+                    <button type="submit" name="order" value="desc" class="btn btn-secondary">
+                    <i class="fa-solid fa-arrow-down-9-1 fa-xl"></i>
+                    </button>
+                    <button type="submit" name="order" value="asc" class="btn btn-secondary">
+                    <i class="fa-solid fa-arrow-down-1-9 fa-xl"></i>
+                    </button>
+                </form>
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -86,33 +101,43 @@
                             <th>Ano</th>
                             <th>Tipo</th>
                             <th>Disponibilidade</th>
+                            <th>Quantidade de Locações</th>
                             <th></th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        // Código PHP para buscar dados dos veículos com filtros
-                        $conn = pg_connect("host=localhost dbname=locadorazz user=postgres password=postgres");
+                        // Código PHP para buscar dados dos veículos com filtros e ordenação
+                        $conn = pg_connect("host=localhost dbname=locadoraEzequielzz user=postgres password=postgres");
                         if (!$conn) {
                             die("Conexão falhou: " . pg_last_error());
                         }
 
                         $conditions = [];
                         if (!empty($_GET['disponibilidade'])) {
-                            $conditions[] = "disponibilidade = '" . pg_escape_string($conn, $_GET['disponibilidade']) . "'";
+                            $conditions[] = "C.disponibilidade = '" . pg_escape_string($conn, $_GET['disponibilidade']) . "'";
                         }
                         if (!empty($_GET['tipo'])) {
-                            $conditions[] = "tipo = '" . pg_escape_string($conn, $_GET['tipo']) . "'";
+                            $conditions[] = "C.tipo = '" . pg_escape_string($conn, $_GET['tipo']) . "'";
                         }
                         if (!empty($_GET['modelo'])) {
-                            $conditions[] = "modelo ILIKE '%" . pg_escape_string($conn, $_GET['modelo']) . "%'";
+                            $conditions[] = "C.modelo ILIKE '%" . pg_escape_string($conn, $_GET['modelo']) . "%'";
                         }
-                        
-                        $query = "SELECT * FROM Carro";
+
+                        $order = "desc";
+                        if (isset($_GET['order']) && ($_GET['order'] === 'asc' || $_GET['order'] === 'desc')) {
+                            $order = $_GET['order'];
+                        }
+
+                        $query = "SELECT C.*, COUNT(L.id_locacao) AS quantidade_locacoes 
+                                  FROM Carro C
+                                  LEFT JOIN Locacao L ON C.id_carro = L.id_carro";
                         if (count($conditions) > 0) {
                             $query .= " WHERE " . implode(' AND ', $conditions);
                         }
+                        $query .= " GROUP BY C.id_carro";
+                        $query .= " ORDER BY quantidade_locacoes $order";
 
                         $result = pg_query($conn, $query);
                         if (!$result) {
@@ -127,11 +152,12 @@
                                     <td>{$row['ano']}</td>
                                     <td>{$row['tipo']}</td>
                                     <td>{$row['disponibilidade']}</td>
+                                    <td>{$row['quantidade_locacoes']}</td>
                                     <td><button type='button' class='btn btn-primary btn-edit'>Editar</button></td>
                                     <td><button type='button' class='btn btn-danger btn-delete'>Excluir</button></td>
                                   </tr>";
                         }
-                        
+
                         pg_free_result($result);
                         pg_close($conn);
                         ?>

@@ -1,5 +1,5 @@
 <?php
-$conn = pg_connect("host=localhost dbname=locadorazz user=postgres password=postgres");
+$conn = pg_connect("host=localhost dbname=locadoraEzequielzz user=postgres password=postgres");
 if (!$conn) {
     die("Conexão falhou: " . pg_last_error());
 }

@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="/Home/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="alocacoes.css">
-    <title>Listagem de Locações - Sync</title>
+    <link rel="stylesheet" href="/Veiculos/infoVeiculos.css">
+    <title>Listagem de Veículos - Sync</title>
 </head>
 
 <body>
@@ -51,67 +52,75 @@
     <div class="container mt-5">
         <div class="card">
             <div class="card-header">
-                <h2>Listagem de Locações</h2>
+                <h2>Listagem de Usuários</h2>
             </div>
             <div class="card-body">
                 <form method="GET" class="row mb-4">
-                    <div class="col-md-4">
-                        <label for="cliente" class="form-label">Nome do Cliente</label>
-                        <input type="text" id="cliente" name="cliente" class="form-control" placeholder="Digite o nome do cliente">
+                    <div class="col-md-3">
+                        <label for="estado" class="form-label">Estado</label>
+                        <input type="text" id="estado" name="estado" class="form-control" placeholder="Digite o estado">
                     </div>
                     <div class="col-md-3">
-                        <label for="data_inicio" class="form-label">Data de Início</label>
-                        <input type="date" id="data_inicio" name="data_inicio" class="form-control">
+                        <label for="nome" class="form-label">Nome</label>
+                        <input type="text" id="nome" name="nome" class="form-control" placeholder="Digite o nome">
                     </div>
-                    <div class="col-md-3">
-                        <label for="data_fim" class="form-label">Data de Término</label>
-                        <input type="date" id="data_fim" name="data_fim" class="form-control">
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
+                    <div class="col-md-3 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100">Filtrar</button>
                     </div>
+                </form>
+                <form method="GET" class="mb-4">
+                    <input type="hidden" name="estado" value="<?php echo htmlspecialchars($_GET['estado'] ?? ''); ?>">
+                    <input type="hidden" name="nome" value="<?php echo htmlspecialchars($_GET['nome'] ?? ''); ?>">
+                    <button type="submit" name="order" value="desc" class="btn btn-secondary">
+                        <i class="fa-solid fa-arrow-down-9-1 fa-xl"></i>
+                    </button>
+                    <button type="submit" name="order" value="asc" class="btn btn-secondary">
+                        <i class="fa-solid fa-arrow-down-1-9 fa-xl"></i>
+                    </button>
                 </form>
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>ID Locação</th>
-                            <th>Data de Locação</th>
-                            <th>Data de Devolução</th>
-                            <th>Valor Total</th>
-                            <th>Carro</th>
-                            <th>Cliente</th>
-                            <th>Média de Dias Alugado</th>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Sobrenome</th>
+                            <th>Endereço</th>
+                            <th>Cidade</th>
+                            <th>Estado</th>
+                            <th>Telefone</th>
+                            <th>Email</th>
+                            <th>Qtd. Locações</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        // Código PHP para buscar dados da tabela Locacao com JOINs e Filtros
+                        // Código PHP para buscar dados dos veículos com filtros e ordenação
                         $conn = pg_connect("host=localhost dbname=locadoraEzequielzz user=postgres password=postgres");
                         if (!$conn) {
                             die("Conexão falhou: " . pg_last_error());
                         }
 
                         $conditions = [];
-                        if (!empty($_GET['cliente'])) {
-                            $conditions[] = "Clientes.nome ILIKE '%" . pg_escape_string($conn, $_GET['cliente']) . "%'";
+                        if (!empty($_GET['estado'])) {
+                            $conditions[] = "C.estado = '" . pg_escape_string($conn, $_GET['estado']) . "'";
                         }
-                        if (!empty($_GET['data_inicio'])) {
-                            $conditions[] = "Locacao.data_locacao >= '" . pg_escape_string($conn, $_GET['data_inicio']) . "'";
-                        }
-                        if (!empty($_GET['data_fim'])) {
-                            $conditions[] = "Locacao.data_devolucao <= '" . pg_escape_string($conn, $_GET['data_fim']) . "'";
+                        if (!empty($_GET['nome'])) {
+                            $conditions[] = "C.nome ILIKE '%" . pg_escape_string($conn, $_GET['nome']) . "%'";
                         }
 
-                        $query = "SELECT Locacao.id_locacao, Locacao.data_locacao, Locacao.data_devolucao, Locacao.valor_total, 
-       Carro.Modelo AS carro, CONCAT(Clientes.nome, ' ', Clientes.sobrenome) AS cliente,
-       (Locacao.data_devolucao - Locacao.data_locacao) AS dias_alugado,
-       AVG(Locacao.data_devolucao - Locacao.data_locacao) OVER (PARTITION BY Carro.id_carro) AS media_dias_alugado
-FROM Locacao
-JOIN Carro ON Locacao.id_carro = Carro.id_carro
-JOIN Clientes ON Locacao.id_cliente = Clientes.id_cliente";
+                        $order = "desc";
+                        if (isset($_GET['order']) && ($_GET['order'] === 'asc' || $_GET['order'] === 'desc')) {
+                            $order = $_GET['order'];
+                        }
+
+                        $query = "SELECT C.*, COUNT(L.id_locacao) AS quantidade_locacoes 
+                                  FROM Clientes C
+                                  LEFT JOIN Locacao L ON C.id_cliente = L.id_cliente";
                         if (count($conditions) > 0) {
                             $query .= " WHERE " . implode(' AND ', $conditions);
                         }
+                        $query .= " GROUP BY C.id_cliente";
+                        $query .= " ORDER BY quantidade_locacoes $order";
 
                         $result = pg_query($conn, $query);
                         if (!$result) {
@@ -119,18 +128,19 @@ JOIN Clientes ON Locacao.id_cliente = Clientes.id_cliente";
                         }
 
                         while ($row = pg_fetch_assoc($result)) {
-                            $dias_alugado = $row['dias_alugado'];
-                            $media_dias_alugado = round($row['media_dias_alugado'], 2);
                             echo "<tr>
-                                    <td>{$row['id_locacao']}</td>
-                                    <td>{$row['data_locacao']}</td>
-                                    <td>{$row['data_devolucao']}</td>
-                                    <td>{$row['valor_total']}</td>
-                                    <td>{$row['carro']}</td>
-                                    <td>{$row['cliente']}</td>
-                                    <td>{$media_dias_alugado}</td>
+                                    <td>{$row['id_cliente']}</td>
+                                    <td>{$row['nome']}</td>
+                                    <td>{$row['sobrenome']}</td>
+                                    <td>{$row['endereco']}</td>
+                                    <td>{$row['cidade']}</td>
+                                    <td>{$row['estado']}</td>
+                                    <td>{$row['telefone']}</td>
+                                    <td>{$row['email']}</td>
+                                    <td>{$row['quantidade_locacoes']}</td>
                                   </tr>";
                         }
+
                         pg_free_result($result);
                         pg_close($conn);
                         ?>
@@ -139,7 +149,8 @@ JOIN Clientes ON Locacao.id_cliente = Clientes.id_cliente";
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 </html>

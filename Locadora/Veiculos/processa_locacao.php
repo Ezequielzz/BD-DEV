@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $valor = $_POST['valor'];
 
     // Conexão com o banco de dados
-    $conn = pg_connect("host=localhost dbname=locadorazz user=postgres password=postgres");
+    $conn = pg_connect("host=localhost dbname=locadoraEzequielzz user=postgres password=postgres");
 
     // Verifica a conexão
     if (!$conn) {
@@ -21,7 +21,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = pg_query($conn, $sql);
 
     if ($result) {
-        echo "Nova locação registrada com sucesso!";
+        header("Location: alocar.php");
+        exit();
     } else {
         echo "Erro: " . pg_last_error();
     }
